@@ -25,7 +25,8 @@ def validate_full_bart_config(config):
     print(f"{'='*60}")
     
     # Check BART model paths
-    bart_models = ['vinai/bartpho-word', 'vinai/bartpho-syllable']
+    # bart_models = ['vinai/bartpho-word', 'vinai/bartpho-syllable']
+    bart_models = ['vinai/bartpho-word', 'vinai/bartpho-syllable', 'vinai/phobert-large']
     
     text_model = config['text_model']
     decoder_model = config['decoder_model']
@@ -434,8 +435,8 @@ def main():
     config = get_improved_config()
     config = validate_full_bart_config(config)
 
-    config['resume_training'] = False
-    config['auto_resume'] = False
+    config['resume_training'] = True
+    config['auto_resume'] = True
     
     # Option 2: Resume from specific checkpoint
     # config['resume_training'] = True
@@ -477,7 +478,7 @@ def main():
     # Load and prepare data
     print(f"\nLoading Vietnamese VQA dataset...")
     try:
-        df = pd.read_csv('/home/tgng/coding/modeltuner/data/text/evaluate_60k_data_balanced.csv')
+        df = pd.read_csv('/root/modeltuner/data/text/evaluate_60k_data_balanced.csv')
         print(f"✅ Dataset loaded: {len(df)} samples")
         
         questions = prepare_data_from_dataframe(df)

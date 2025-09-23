@@ -78,7 +78,7 @@ class ImprovedVQATrainer:
         print(f"  Block-wise vision masking: {config.get('use_unified_masking', False)}")
         print(f"  WUPS metrics: {config.get('calculate_wups', False)}")
         print(f"  Multiway Transformer layers: {config.get('num_multiway_layers', 6)}")
-        print(f"  Resume training: {config.get('resume_training', False)}")
+        print(f"  Resume training: {config.get('resume_training', True)}")
         if self.start_epoch > 0:
             print(f"  Resuming from epoch: {self.start_epoch + 1}")
             print(f"  Current stage: {self.current_stage}")
@@ -457,7 +457,7 @@ class ImprovedVQATrainer:
         
         try:
             # Load checkpoint
-            checkpoint = torch.load(checkpoint_path, map_location=self.device)
+            checkpoint = torch.load(checkpoint_path, map_location=self.device, weights_only=False)
             
             # Print checkpoint info
             print(f"Checkpoint information:")
@@ -668,6 +668,7 @@ class ImprovedVQATrainer:
         }
         
         # Enhanced sample analysis
+        all_correct_answers = list(map(list, zip(*all_correct_answers)))
         for i, (pred, correct_answers) in enumerate(zip(predictions[:100], all_correct_answers[:100])):
             sample_result = {
                 'index': i,

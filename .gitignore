@@ -17,3 +17,5 @@ __pycache__/
 client_secrets.json
 *.zip
 venv/
+*.json
+OpenViVQA/

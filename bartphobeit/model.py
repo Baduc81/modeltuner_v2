@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from transformers import (
     AutoTokenizer, AutoModel, 
     ViTFeatureExtractor, ViTModel,
+    AutoModel,
     MBartForConditionalGeneration
 )
 from transformers.modeling_outputs import BaseModelOutput
@@ -119,16 +120,18 @@ class VQKDVisualTokenizer(nn.Module):
     Theo paper BARTPhoBEiT - BEIT-2 visual tokenizer
     """
     
-    def __init__(self, vocab_size=8192, embed_dim=768, teacher_dim=768):
+    # def __init__(self, vocab_size=8192, embed_dim=768, teacher_dim=768, teacher_model_name="google/vit-large-patch16-224-in21k"):
+    def __init__(self, vocab_size=8192, embed_dim=768, teacher_model_name="google/vit-large-patch16-224-in21k"):
         super().__init__()
         self.vocab_size = vocab_size
         self.embed_dim = embed_dim
-        self.teacher_dim = teacher_dim
+        # self.teacher_dim = teacher_dim
         # Codebook V ∈ R^{K×D}
         self.codebook = nn.Embedding(vocab_size, embed_dim)
         
         # Teacher model (sử dụng pre-trained ViT)
-        self.teacher_model = ViTModel.from_pretrained("google/vit-base-patch16-224-in21k")
+        self.teacher_model = ViTModel.from_pretrained(teacher_model_name)
+        self.teacher_dim = self.teacher_model.config.hidden_size
         for param in self.teacher_model.parameters():
             param.requires_grad = False  # Freeze teacher
         
@@ -145,7 +148,7 @@ class VQKDVisualTokenizer(nn.Module):
         )
         
         # Output projection
-        self.output_proj = nn.Linear(embed_dim, teacher_dim)
+        self.output_proj = nn.Linear(embed_dim, self.teacher_dim)
         
         # Initialize codebook
         nn.init.normal_(self.codebook.weight, std=0.02)
@@ -201,8 +204,8 @@ class VQKDVisualTokenizer(nn.Module):
         # 1. Cosine similarity loss: maximize cos(o_i, t_i)
         teacher_dim = teacher_features.size(-1)
         cosine_loss = 1 - F.cosine_similarity(
-            reconstructed_normalized.view(-1, teacher_dim),
-            teacher_normalized.view(-1, teacher_dim),
+            reconstructed_normalized.view(-1, self.teacher_dim),
+            teacher_normalized.view(-1, self.teacher_dim),
             dim=-1
         ).mean()
         
@@ -415,13 +418,17 @@ class ImprovedVietnameseVQAModel(nn.Module):
         vision_dim = self.vision_model.config.hidden_size  # 768
         
         # Load BART model only once
-        bart_model = MBartForConditionalGeneration.from_pretrained(model_config['text_model'])
-        text_dim = bart_model.config.d_model  # 1024 for BARTPho
+        # bart_model = AutoModel.from_pretrained(model_config['text_model'])
+        # text_dim = bart_model.config.d_model  # 1024 for BARTPho
+        # text_dim = 1024
         
         # Use BART encoder for text encoding
-        self.text_encoder = bart_model.get_encoder()
+        # self.text_encoder = bart_model.get_encoder()
+
+        self.text_encoder = AutoModel.from_pretrained(model_config['text_model'])
+        text_dim = self.text_encoder.config.hidden_size  # 1024 for phobert-large
         
-        self.text_decoder = bart_model  # Reuse the same model
+        self.text_decoder = MBartForConditionalGeneration.from_pretrained(model_config['decoder_model'])  # Reuse the same model
         
         # Tokenizer
         self.decoder_tokenizer = AutoTokenizer.from_pretrained(model_config['decoder_model'])
@@ -434,10 +441,15 @@ class ImprovedVietnameseVQAModel(nn.Module):
         # VQ-KD Visual Tokenizer
         use_vqkd = model_config.get('use_vqkd', True)
         if use_vqkd:
+            # self.visual_tokenizer = VQKDVisualTokenizer(
+            #     vocab_size=model_config.get('visual_vocab_size', 8192),
+            #     embed_dim=vision_dim,
+            #     teacher_dim=vision_dim
+            # )
             self.visual_tokenizer = VQKDVisualTokenizer(
                 vocab_size=model_config.get('visual_vocab_size', 8192),
-                embed_dim=vision_dim,
-                teacher_dim=vision_dim
+                embed_dim=model_config['hidden_dim'],
+                teacher_model_name=model_config['vision_model']
             )
             print("VQ-KD Visual Tokenizer enabled")
         else:
@@ -457,6 +469,7 @@ class ImprovedVietnameseVQAModel(nn.Module):
         
         # Output projection to BART decoder dimension
         decoder_dim = self.text_decoder.config.d_model
+        # decoder_dim = self.text_decoder.config.hidden_size
         assert decoder_dim == hidden_dim, f"Decoder dim ({decoder_dim}) must match hidden dim ({hidden_dim})"
         
         self.output_proj = nn.Sequential(

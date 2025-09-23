@@ -4,14 +4,15 @@ def get_improved_config():
     """Enhanced config with resume training support"""
     config = {
         # Model architecture
-        'vision_model': 'google/vit-base-patch16-224-in21k',
-        'text_model': 'vinai/bartpho-syllable',
+        'vision_model': 'google/vit-large-patch16-224-in21k',
+        'text_model': 'vinai/phobert-large',
         'decoder_model': 'vinai/bartpho-syllable',
         
         # Training parameters
-        'batch_size': 8,
-        'num_epochs': 20,
-        'stage1_epochs': 8,
+        'batch_size': 64,
+        'num_epochs': 1,
+        # 'stage1_epochs': 8,
+        'stage1_epochs': 5,
         'unfreeze_last_n_layers': 2,
         
         # Learning rates
@@ -22,7 +23,7 @@ def get_improved_config():
         'warmup_ratio': 0.1,
         
         # Data settings
-        'image_dir': '/home/tgng/coding/modeltuner/data/preprocessed_images/',
+        'image_dir': '/root/modeltuner/data/preprocessed_images',
         'max_length': 128,
         'use_data_augmentation': True,
         'augment_ratio': 0.2,
@@ -55,11 +56,11 @@ def get_improved_config():
         'use_wandb': False,
         'project_name': 'BARTPhoBEiT-Vietnamese-VQA',
         'save_every_n_epochs': 1,
-        'keep_last_n_checkpoints': 5,
+        'keep_last_n_checkpoints': 1,
         'save_predictions': True,
         
         # ✨ NEW: Resume training configuration
-        'resume_training': False,  # Enable/disable resume functionality
+        'resume_training': True,  # Enable/disable resume functionality
         'resume_from_checkpoint': None,  # Path to specific checkpoint or 'latest' for auto-detect
         'auto_resume': True,  # Automatically find and resume from latest checkpoint
         'resume_strict': True,  # Strict mode for checkpoint loading
