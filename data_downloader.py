@@ -1,7 +1,7 @@
 import kagglehub, shutil, os
 
 path = kagglehub.dataset_download("nguynrichard/auto-vqabest")
-target = "/root/modeltuner/data"
+target = "/root/modeltuner_v2/data"
 os.makedirs(target, exist_ok=True)
 
 for item in os.listdir(path):

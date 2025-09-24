@@ -40,3 +40,6 @@ git clone https://github.com/nghiangh/OpenViVQA
 echo "Chạy script data_downloader.py..."
 python data_downloader.py
 echo
+
+# chmod +x setup.sh
+# ./setup.sh

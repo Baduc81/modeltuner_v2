@@ -10,10 +10,9 @@ def get_improved_config():
         
         # Training parameters
         'batch_size': 64,
-        'num_epochs': 1,
-        # 'stage1_epochs': 8,
-        'stage1_epochs': 5,
-        'unfreeze_last_n_layers': 2,
+        'num_epochs': 3,
+        'stage1_epochs': 8,
+        'unfreeze_last_n_layers': 4,
         
         # Learning rates
         'decoder_lr': 5e-5,
@@ -23,7 +22,7 @@ def get_improved_config():
         'warmup_ratio': 0.1,
         
         # Data settings
-        'image_dir': '/root/modeltuner/data/preprocessed_images',
+        'image_dir': '/root/modeltuner_v2/data/preprocessed_images',
         'max_length': 128,
         'use_data_augmentation': True,
         'augment_ratio': 0.2,

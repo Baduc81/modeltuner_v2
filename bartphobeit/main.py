@@ -435,12 +435,12 @@ def main():
     config = get_improved_config()
     config = validate_full_bart_config(config)
 
-    config['resume_training'] = True
-    config['auto_resume'] = True
+    # config['resume_training'] = True
+    # config['auto_resume'] = True
     
     # Option 2: Resume from specific checkpoint
-    # config['resume_training'] = True
-    # config['resume_from_checkpoint'] = 'checkpoints/checkpoint_epoch_5.pth'
+    config['resume_training'] = True
+    config['resume_from_checkpoint'] = 'checkpoints/checkpoint_epoch_3.pth'
     
     # Option 3: Resume from best model
     # config['resume_training'] = True
@@ -478,7 +478,7 @@ def main():
     # Load and prepare data
     print(f"\nLoading Vietnamese VQA dataset...")
     try:
-        df = pd.read_csv('/root/modeltuner/data/text/evaluate_60k_data_balanced.csv')
+        df = pd.read_csv('/root/modeltuner_v2/data/text/evaluate_60k_data_balanced.csv')
         print(f"✅ Dataset loaded: {len(df)} samples")
         
         questions = prepare_data_from_dataframe(df)
@@ -494,8 +494,11 @@ def main():
     
     # Split data
     split_idx = int(0.8 * len(questions))
-    train_questions = questions[:split_idx]
-    val_questions = questions[split_idx:]
+    # train_questions = questions[:split_idx]
+    # val_questions = questions[split_idx:]
+
+    train_questions = questions[:100]
+    val_questions = questions[100:120]
     
     print(f"\nDataset split:")
     print(f"  Train questions: {len(train_questions):,}")
