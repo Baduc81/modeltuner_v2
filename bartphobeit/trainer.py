@@ -668,7 +668,7 @@ class ImprovedVQATrainer:
         }
         
         # Enhanced sample analysis
-        all_correct_answers = list(map(list, zip(*all_correct_answers)))
+        # all_correct_answers = list(map(list, zip(*all_correct_answers)))
         for i, (pred, correct_answers) in enumerate(zip(predictions[:100], all_correct_answers[:100])):
             sample_result = {
                 'index': i,
@@ -1078,18 +1078,18 @@ class ImprovedVQATrainer:
         print(f"{'='*80}")
         
         # Final evaluation and saving
-        # try:
-        #     final_metrics, final_predictions, final_references = self.evaluate_with_wups()
-        #     self.save_final_checkpoint(final_metrics)
+        try:
+            final_metrics, final_predictions, final_references = self.evaluate_with_wups()
+            self.save_final_checkpoint(final_metrics)
             
-        #     print(f"🏆 Final Results:")
-        #     print(f"  Best VQA Score: {self.best_vqa_score:.4f}")
-        #     print(f"  Best WUPS-0.9: {self.best_wups_09:.4f}")
-        #     print(f"  Best Fuzzy Accuracy: {self.best_fuzzy_accuracy:.4f}")
-        #     print(f"  Best Multi Exact Accuracy: {self.best_multi_exact_accuracy:.4f}")
+            print(f"🏆 Final Results:")
+            print(f"  Best VQA Score: {self.best_vqa_score:.4f}")
+            print(f"  Best WUPS-0.9: {self.best_wups_09:.4f}")
+            print(f"  Best Fuzzy Accuracy: {self.best_fuzzy_accuracy:.4f}")
+            print(f"  Best Multi Exact Accuracy: {self.best_multi_exact_accuracy:.4f}")
             
-        # except Exception as e:
-        #     print(f"Warning: Final evaluation failed: {e}")
+        except Exception as e:
+            print(f"Warning: Final evaluation failed: {e}")
         
         print(f"\n📁 Saved Models:")
         print(f"  🥇 best_vqa_model.pth - Best VQA Score model")

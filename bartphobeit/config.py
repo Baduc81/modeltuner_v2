@@ -10,7 +10,7 @@ def get_improved_config():
         
         # Training parameters
         'batch_size': 32,
-        'num_epochs': 12,
+        'num_epochs': 13,
         'stage1_epochs': 5,
         'unfreeze_last_n_layers': 4,
         

@@ -19,3 +19,4 @@ client_secrets.json
 venv/
 *.json
 OpenViVQA/
+*.tar.gz

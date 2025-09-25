@@ -440,7 +440,7 @@ def main():
     
     # Option 2: Resume from specific checkpoint
     config['resume_training'] = True
-    config['resume_from_checkpoint'] = 'checkpoints/checkpoint_epoch_5.pth'
+    config['resume_from_checkpoint'] = 'checkpoints/checkpoint_epoch_12.pth'
     
     # Option 3: Resume from best model
     # config['resume_training'] = True
