@@ -9,9 +9,9 @@ def get_improved_config():
         'decoder_model': 'vinai/bartpho-syllable',
         
         # Training parameters
-        'batch_size': 64,
-        'num_epochs': 3,
-        'stage1_epochs': 8,
+        'batch_size': 32,
+        'num_epochs': 12,
+        'stage1_epochs': 5,
         'unfreeze_last_n_layers': 4,
         
         # Learning rates

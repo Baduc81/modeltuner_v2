@@ -440,7 +440,7 @@ def main():
     
     # Option 2: Resume from specific checkpoint
     config['resume_training'] = True
-    config['resume_from_checkpoint'] = 'checkpoints/checkpoint_epoch_3.pth'
+    config['resume_from_checkpoint'] = 'checkpoints/checkpoint_epoch_5.pth'
     
     # Option 3: Resume from best model
     # config['resume_training'] = True
@@ -494,11 +494,11 @@ def main():
     
     # Split data
     split_idx = int(0.8 * len(questions))
-    # train_questions = questions[:split_idx]
-    # val_questions = questions[split_idx:]
+    train_questions = questions[:split_idx]
+    val_questions = questions[split_idx:]
 
-    train_questions = questions[:100]
-    val_questions = questions[100:120]
+    # train_questions = questions[:100]
+    # val_questions = questions[100:120]
     
     print(f"\nDataset split:")
     print(f"  Train questions: {len(train_questions):,}")
